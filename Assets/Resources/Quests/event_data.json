@@ -1,0 +1,175 @@
+{
+	"events": [
+		{
+			"eventId": "main_001",
+			"chapter": "chapter1",
+			"condition": null,
+			"status": 1,
+			"npcId": 1,
+			"dialogueLines": [
+				{
+					"speakerId": 1,
+					"lineId": "main_001_dialogue_01",
+					"text": "Salut ! On ne se connaît pas je crois.",
+					"type": 1,
+					"emotion": 5,
+					"nextLine": ["main_001_dialogue_02"]
+				},
+				{
+					"speakerId": 1,
+					"lineId": "main_001_dialogue_02",
+					"text": "Je m'appelle Claire. Bienvenue chez binsfeld !",
+					"type": 1,
+					"emotion": 2,
+					"nextLine": ["main_001_dialogue_03"]
+				},
+				{
+					"speakerId": 1,
+					"lineId": "main_001_dialogue_03",
+					"text": "Je sais que c'est soudain, mais pourrais-tu m'aider ?",
+					"type": 2,
+					"emotion": 6,
+					"choices": [ "Bien �videmment !", "Non merci. Je pr�f�re la 2D" ],
+					"nextLine": [ "main_001_dialogue_04", "quit" ]
+				},
+				{
+					"speakerId": 1,
+					"lineId": "main_001_dialogue_04",
+					"text": "Super !",
+					"type": 1,
+					"emotion": 2,
+					"nextLine": ["main_001_dialogue_05"]
+				},
+				{
+					"speakerId": 1,
+					"lineId": "main_001_dialogue_05",
+					"text": "Pour commencer. Va interagir avec le cube vert.",
+					"type": 1,
+					"emotion": 1,
+					"nextLine": [],
+					"trigger_quest": "main_001_touch_green_sphere"
+				}
+			],
+			"questGiven": {
+				"questId": "main_001_touch_green_cube",
+				"title": "As-tu la main verte ?",
+				"short_description": "Claire t'a demand� d'intergir avec le cube vert",
+				"long_description": "Claire t'a demand� d'intergir avec le cube vert",
+				"return_description": "Retourne voir Claire",
+				"isMainQuest": true,
+				"status": 1,
+				"validatorId": 1,
+				"objectives": [
+					{
+						"objectiveId": "main_001_01",
+						"description": "Interagir avec le cube vert",
+						"questDescription": "Vous touchez le cube",
+						"showAmounts": false,
+						"requiredAmount": 1,
+						"currentAmount": 0,
+						"missingAmount": null
+					}
+				],
+				"waitingDialogueLines": [
+					{
+						"speakerId": 1,
+						"lineId": "main_001_waiting_dialogue_01",
+						"text": "Trouve le cube vert et appuie sur la touche %Interaction%.",
+						"type": 1,
+						"emotion": 1,
+						"nextLine": []
+					}
+				],
+				"completedDialogueLines": [
+					{
+						"speakerId": 1,
+						"lineId": "main_001_completed_dialogue_01",
+						"text": "Bravo !",
+						"type": 1,
+						"emotion": 2,
+						"nextLine": []
+					}
+				]
+			},
+			"reward": {
+				"xp": 150,
+				"gold": 50,
+				"items": [],
+				"rewardItemType": 1,
+				"triggerNextEvent": "main_002"
+			}
+		},
+		{
+			"chapter": "chapter2",
+			"eventId": "main_002",
+			"condition": null,
+			"status": 1,
+			"npcId": 1,
+			"dialogueLines": [
+				{
+					"speakerId": 1,
+					"lineId": "main_002_dialogue_01",
+					"text": "Compliquons les choses.",
+					"type": 1,
+					"emotion": 1,
+					"nextLine": ["main_002_dialogue_02"]
+				},
+				{
+					"speakerId": 1,
+					"lineId": "main_002_dialogue_02",
+					"text": "Interagis avec 4 sph�res de ton choix.",
+					"type": 1,
+					"emotion": 1,
+					"nextLine": []
+				}
+			],
+			"questGiven": {
+				"questId": "main_002_touch_four_spheres",
+				"title": "Puissance 4 ?",
+				"short_description": "Claire t'a demand� d'intergir avec 4 sphères diff�rentes",
+				"long_description": "Claire t'a demand� d'intergir avec 4 sphères diff�rentes",
+				"return_description": "Retourne voir Claire",
+				"isMainQuest": true,
+				"status": 1,
+				"validatorId": 1,
+				"objectives": [
+					{
+						"objectiveId": "main_002_01",
+						"description": "Interagir avec 4 sphères",
+						"questDescription": "Vous touchez la sphère",
+						"showAmounts": false,
+						"requiredAmount": 4,
+						"currentAmount": 0,
+						"missingAmount": 4
+					}
+				],
+				"waitingDialogueLines": [
+					{
+						"speakerId": 1,
+						"lineId": "main_002_waiting_dialogue_01",
+						"text": "Tu as interagis avec %currentAmount% sph�res. Il te manque %missingAmount%",
+						"type": 1,
+						"emotion": 1,
+						"nextLine": []
+					}
+				],
+				"completedDialogueLines": [
+					{
+						"speakerId": 1,
+						"lineId": "main_002_completed_dialogue_01",
+						"text": "Bravo ! Je n'avais aucun doute quant � ton talent pour toucher des boules !",
+						"type": 1,
+						"emotion": 2,
+						"nextLine": []
+					}
+				]
+			},
+			"reward": {
+				"xp": 150,
+				"gold": 50,
+				"items": [],
+				"rewardItemType": 1
+			}
+		}
+	]
+}
