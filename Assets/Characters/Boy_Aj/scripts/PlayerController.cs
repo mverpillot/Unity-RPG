@@ -65,12 +65,11 @@ public class PlayerController : MonoBehaviour
         sprintSpeed = actions.Player.Sprint.ReadValue<float>() * sprintMultiplier + 1;
         speedMultiplier = movement.y > 0 ? movement.y * sprintSpeed : movement.y;
 
-
-
         animator.SetFloat("movement_speed", speedMultiplier);
         animator.SetBool("is_moving", Mathf.Abs(speedMultiplier) > 0);
 
         transform.Translate(Vector3.forward * speedMultiplier * movementSpeed * Time.deltaTime);
+        transform.Rotate(Vector3.up * rotationSpeed * movement.x * Time.deltaTime);
     }
 
     void Jump()
@@ -92,7 +91,7 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 movement = actions.Player.Look.ReadValue<Vector2>();
 
-            transform.Rotate(Vector3.up * movement.x * rotationSpeed * Time.deltaTime);
+            cam.transform.RotateAround(transform.position, transform.up, movement.x * rotationSpeed * Time.deltaTime);
         }
     }
 

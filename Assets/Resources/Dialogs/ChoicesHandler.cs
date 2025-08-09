@@ -13,7 +13,7 @@ public class ChoicesHandler : MonoBehaviour
     [SerializeField] private float fillSpeed = 1.5f;
     [SerializeField] private float clickResetDelay = 0.1f;
 
-    private List<Button> generatedButtons = new List<Button>();
+    private List<GameObject> generatedButtons = new List<GameObject>();
 
     private TaskCompletionSource<int> taskCompletionSource;
 
@@ -22,9 +22,9 @@ public class ChoicesHandler : MonoBehaviour
 
     public async Task<int> DisplayButtonsAsync(List<string> choices)
     {
-        foreach (var btn in generatedButtons)
+        foreach (var container in generatedButtons)
         {
-            Destroy(btn.gameObject);
+            Destroy(container);
         }
         generatedButtons.Clear();
         panelChoices.SetActive(true);
@@ -45,7 +45,7 @@ public class ChoicesHandler : MonoBehaviour
             else
                 btn.GetComponentInChildren<Text>().text = choices[i];
 
-            generatedButtons.Add(btn);
+            generatedButtons.Add(container);
             AddListeners(btn, index);
         }
 
@@ -54,6 +54,7 @@ public class ChoicesHandler : MonoBehaviour
         return selectedIndex;
     }
 
+    // TO DO : Hover ne fonctionne pas + modifier Hover par Select(je crois ?) pour compatibilté manette
     private void AddListeners(Button btn, int index)
     {
         EventTrigger trigger = btn.GetComponent<EventTrigger>();
