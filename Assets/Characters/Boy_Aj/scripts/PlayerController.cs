@@ -101,12 +101,20 @@ public class PlayerController : MonoBehaviour
         GameObject Object = ObjectDetection.closestObject;
         bool isInteracting = actions.Player.Interact.triggered;
 
+        /*
+         * 1. Si un gameObject a le focus
+         * 2. Que le joueur n'est pas en train de sauter
+         * 3. Qu'il appuie sur la touche d'interaction
+         * 4. Qu'il n'est pas en cours de dialoogue
+         */
         if (Object && IsGrounded() && isInteracting && !isReading)
         {
+            /* Cas 1 : Le gameObject est un objet */
             if(Object.layer == (int) ObjectLayers.Object)
             {
                 Object_Behavior objectData = Object.GetComponent<Object_Behavior>();
 
+                /* On lance l'interaction objet et on récupère un bool indiquant s'il y a une animation associée */
                 bool hasAnimation = EventController.Instance.TriggerObjectInteractionEvent(objectData);
 
                 if (hasAnimation)
@@ -116,19 +124,22 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
+            /* Cas 2 : On lance l'interaction NPC */
             if (Object.layer == (int) ObjectLayers.NPC)
             {
                 EventController.Instance.TriggerNpcInteractionEvent(Object);
             }
         }
 
+        /* Si le joueur appuie sur la touche interaction en cours de dialogue */
         if(isInteracting && isReading)
         {
-
+            /* Cas 1 : C'est un dialogue type objet (description objet, quête, etc...) */
             if (Object.layer == (int)ObjectLayers.Object)
             {
                 Object_Behavior objectData = Object.GetComponent<Object_Behavior>();
 
+                /*On lance l'interaction objet et on récupère un bool indiquant s'il y a une animation associée (qu'on interrompt) */
                 bool hasAnimation = EventController.Instance.TriggerObjectInteractionEvent(objectData);
 
                 if(isAnimating)
@@ -137,12 +148,18 @@ public class PlayerController : MonoBehaviour
                     isAnimating = false;
                 }
             }
+
+            /* Cas 2 : C'est un dialogue type NPC */
             if (Object.layer == (int)ObjectLayers.NPC)
             {
-                if (DialogController.Instance.HasMoreDialogs())
+                /*
+                 * Si la ligne de dialogue est finie et qu'il reste des lignes de dialogue, on lance le prochain dialogue
+                 * Sinon on finit le dialogue en recevant ou validant une quête le cas échéant
+                 */
+                if (DialogController.Instance.HasMoreDialogs() && DialogController.Instance.lineFinished)
                 {
                     DialogController.Instance.NextDialog();
-                } else
+                } else if (DialogController.Instance.dialogFinished)
                 {
                     EventController.Instance.TriggerNpcInteractionEvent(Object);
                 }

@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public enum DialogueType
-{
-    simple,
-    choice
-}
-
 [System.Serializable]
 public class DialogueLine
 {

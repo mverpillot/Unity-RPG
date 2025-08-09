@@ -136,6 +136,8 @@ public class EventController : MonoBehaviour
         {
             Audio.PlayOneShot(audioSource);
         }
+
+        DialogController.Instance.ResetDialog();
     }
 
     public void TriggerNpcInteractionEvent(GameObject Npc)
@@ -147,6 +149,7 @@ public class EventController : MonoBehaviour
         bool isValidator = EventDB.validators.Contains(npcId);
         bool isQuestGiver = EventDB.questGivers.Contains(npcId);
 
+        /* Le NPC valide-t-il une quête en cours ? */
         if (isValidator)
         {
             if (EventDB.activeEvent.questGiven.status == EventStatus.Completed)
@@ -159,14 +162,17 @@ public class EventController : MonoBehaviour
                 dialogs = EventDB.activeEvent?.questGiven?.waitingDialogueLines;
             }
         }
+        /* Le NPC a-t-il une quête à donner ? */
         else if (isQuestGiver)
         {
             dialogs = GetQuestGiverDialog(Npc);
             callback = () => SetActiveQuest(Npc);
         }
+        /* Dialogues par défaut */
         else
         {
             dialogs = new List<DialogueLine>() { new DialogueLine { text = Npc.GetComponent<NPC_Behavior>().defaultDialogue } };
+            callback = () => DialogController.Instance.ResetDialog();
         }
 
         TriggerDialog(dialogs, callback);
@@ -210,6 +216,8 @@ public class EventController : MonoBehaviour
                 Audio.PlayOneShot(audioSource);
             }
         }
+
+        DialogController.Instance.ResetDialog();
     }
 
     public bool TriggerObjectInteractionEvent(Object_Behavior gameObject)
@@ -229,7 +237,7 @@ public class EventController : MonoBehaviour
             objectDescription = new DialogueLine { text = gameObject.description };
             dialogueLine.Add(objectDescription);
 
-            TriggerDialog(dialogueLine);
+            TriggerDialog(dialogueLine, () => DialogController.Instance.ResetDialog());
             return false;
         }
 
@@ -243,13 +251,14 @@ public class EventController : MonoBehaviour
 
     private void TriggerDialog(List<DialogueLine> dialogs, Action callback = null)
     {
-        if (DialogController.Instance.isReading)
+        /* Si c'est la dernière ligne de dialogue => On lance la fonction de callback (activer/valider la quête) */
+        if (DialogController.Instance.isReading && !DialogController.Instance.HasMoreDialogs())
         {
             callback?.Invoke();
-            DialogController.Instance.ResetDialog();
         }
         else
         {
+            /* Sinon (si c'est la première ligne de dialogue) affiche le panneau de de dialogue */
             if (dialogs == null || dialogs.Count == 0)
             {
                 Debug.LogWarning("No dialog lines to display.");
@@ -263,16 +272,19 @@ public class EventController : MonoBehaviour
 
     public void ValidateCurrentEvent()
     {
+        /* On enregistre la complétion de quête */
         EventDB.activeEvent.questGiven.status = EventStatus.Completed;
         EventDB.validators.Remove(EventDB.activeEvent.questGiven.validatorId);
         SaveData.completedEvents.Add(EventDB.activeEvent.eventId, EventDB.activeEvent);
         DialogController.Instance.ResetDialog();
 
+        /* SFX de victoire */
         if(audioDictionary.TryGetValue(AudioClips.QuestComplete, out AudioClip audioSource))
         {
             Audio.PlayOneShot(audioSource);
         }
 
+        /* S'il n'y a plus de quêtes dans le chapitre en cours, on charge les events du chapitre suivant */
         EventNode nextEvent = EventDB.events
                 .Where(e => e.status == EventStatus.Available && e.chapter == $"chapter{EventDB.currentChapter}")
                 .FirstOrDefault();
